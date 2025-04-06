@@ -1,4 +1,9 @@
 /* base */
+@font-face {
+	font-family: Gohu;
+	src: url(fonts/GohuFontuni14NerdFontMono-Regular.ttf);
+}
+
 :root {
 	--text: #444444;
 	--bg: #eeeeee;
@@ -7,7 +12,7 @@
 
 * {
 	color: var(--text);
-	font-family: none;
+	font-family: Gohu;
 	font-size: 24px;
 	background-color: var(--bg);
 }
@@ -24,7 +29,6 @@ body {
 input {
 	width: 99.68%;
 	border: none;
-	font-family: none;
 }
 
 input:focus {
@@ -93,9 +97,11 @@ img {
 	min-height: 50px;
 	text-align: center;
 	justify-content: center;
+
 	& p {
 		margin: auto;
 	}
+
 	& em {
 		margin: auto;
 	}
