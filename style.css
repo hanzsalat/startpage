@@ -1,123 +1,141 @@
 /* base */
 @font-face {
-	font-family: Gohu;
-	src: url(fonts/GohuFontuni14NerdFontMono-Regular.ttf);
+    font-family: Gohu;
+    src: url(fonts/GohuFontuni14NerdFontMono-Regular.ttf);
 }
 
 :root {
-	--text: #444444;
-	--bg: #eeeeee;
-	--fade: #d70087;
+    --text: #444444; /* 444444 */
+    --bg: #eeeeee; /* #eeeeee */
+    --fade: #d70087;
 }
 
 * {
-	color: var(--text);
-	font-family: Gohu;
-	font-size: 24px;
-	background-color: var(--bg);
+    color: var(--text);
+    font-family: Gohu;
+    font-size: 24px;
+    background-color: var(--bg);
 }
 
-body {
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
-	margin: auto;
-	padding: 3% 25%;
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.wrapper > * {
+    padding: 20px;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    padding: 3% 25%;
 }
 
 input {
-	width: 99.68%;
-	border: none;
+    width: 100%;
+    border: none;
 }
 
 input:focus {
-	outline: none;
+    outline: none;
 }
 
-ul {
-	list-style-type: "󰨔 ";
+.eather::marker {
+    content: "󰨔 ";
+}
+
+.local::marker {
+    content: "󰝤 ";
 }
 
 a {
-	color: var(--text);
-	text-decoration: none;
+    color: var(--text);
+    text-decoration: none;
 }
 
 a:hover {
-	color: var(--fade)
+    color: var(--fade)
 }
 
 img {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 /* grid */
 .row {
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	margin: 10px 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0;
 }
 
 .column {
-	flex: 1;
-	padding: 10px;
+    flex: 1;
+    padding: 10px;
 }
 
 /* deviders */
 .box {
-	border: 2px solid var(--bg);
+    border: 2px solid var(--bg);
 }
 
 .underline {
-	border-bottom: 2px solid var(--text);
+    border-bottom: 2px solid var(--text);
 }
 
 /* other */
 #logo {
-	width: 450px;
-	height: 450px;
-	border: 2px solid var(--text)
+    display: block;
+    width: 450px;
+    height: 450px;
+    border: 2px solid var(--text)
+}
+
+@media (max-width: 1024px) {
+    #logo {
+        display: none;
+    }
 }
 
 #time {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 #date {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 #poem,
 #author {
-	display: flex;
-	margin: 0 auto;
-	min-height: 50px;
-	text-align: center;
-	justify-content: center;
-
-	& p {
-		margin: auto;
-	}
-
-	& em {
-		margin: auto;
-	}
+    display: flex;
+    margin: 0 auto;
+    min-height: 50px;
+    text-align: center;
+    justify-content: center;
+    & p {
+        margin: auto;
+    }
+    & em {
+        margin: auto;
+    }
 }
 
 #links {
-	display: grid;
-	align-items: center;
-	margin: auto;
+    display: grid;
+    align-items: center;
+    margin: auto;
 }
 
 #weather {
-	margin: auto;
+    margin: auto;
 }
 
 .search {
-	width: 99%;
-	margin: 0 10px;
+    width: 100%;
 }

@@ -13,49 +13,54 @@
 </head>
 
 <body>
-  <!-- search bar -->
-  <div class="row">
-    <div class="search underline">
-      <form action="https://duckduckgo.com/" method="get">
-        <input type="text" name="q" placeholder="Search..." autofocus onfocus="this.select()"/>
-      </form>
-    </div>
-  </div>
+  <div class="wrapper">
+      <div class="box">
+        <!-- search bar -->
+        <div class="row">
+            <div class="search underline">
+            <form action="https://duckduckgo.com/" method="get">
+                <input type="text" name="q" placeholder="Search..." autofocus onfocus="this.select()"/>
+            </form>
+            </div>
+        </div>
 
-  <!-- middle section -->
-  <div class="row">
-    <!-- time and weather -->
-    <div class="column">
-      <p id="time"></p>
-      <p id="date"></p>
-      <hr>
-      <p id="weather"></p>
-    </div>
-    <!-- logo -->
-    <div class="column">
-      <div id="logo">
-        <img src="logo.png" />
-      </div>
-    </div>
-    <!-- links -->
-    <div class="column" id="links">
-      <ul>
-        <li><a href="https://www.youtube.com/feed/subscriptions">YouTube</a></li>
-        <li><a href="https://www.twitch.tv/">Twitch</a></li>
-        <li><a href="https://github.com">GitHub</a></li>
-        <li><a href="http://10.0.0.60:3000">Gitea Local</a></li>
-        <li><a href="https://px.home.local">Proxmox Local</a></li>
-        <li><a href="http://dns.home.local/admin">Piehole Local</a></li>
-        <li><a href="https://playit.gg/account/agents">Playit</a></li>
-        <li><a href="https://forge.sp-tarkov.com/mods">SPT</a></li>
-      </ul>
-    </div>
-  </div>
+        <!-- middle section -->
+        <div class="row">
+            <!-- time and weather -->
+            <div class="column">
+            <p id="time"></p>
+            <p id="date"></p>
+            <hr>
+            <p id="weather"></p>
+            </div>
+            <!-- logo -->
+            <div class="column">
+            <div id="logo">
+                <img src="logo.png" />
+            </div>
+            </div>
+            <!-- links -->
+            <div class="column" id="links">
+            <ul class="eather">
+                <li class="eather"><a href="https://www.youtube.com/feed/subscriptions">YouTube</a></li>
+                <li class="eather"><a href="https://www.twitch.tv/">Twitch</a></li>
+                <li class="eather"><a href="https://github.com">GitHub</a></li>
+                <li class="eather"><a href="https://playit.gg/account/agents">Playit</a></li>
+                <li class="eather"><a href="https://forge.sp-tarkov.com/mods">SPT</a></li>
+                <li class="local"><a href="http://homeassistant.local:8123/">Smart Home</a></li>
+                <li class="local"><a href="http://10.0.0.60:3000">Git</a></li>
+                <li class="local"><a href="https://px.home.local" >Proxmox</a></li>
+                <li class="local"><a href="http://dns.home.local/admin">Pihole</a></li>
+            </ul>
+            </div>
+        </div>
 
-  <!-- quote section -->
-  <div class="row">
-    <div id="poem" class="row"></div>
-    <div id="author" class="row"></div>
+        <!-- quote section -->
+        <div class="row">
+            <div id="poem" class="row"></div>
+            <div id="author" class="row"></div>
+        </div>
+    </div>
   </div>
 </body>
 
