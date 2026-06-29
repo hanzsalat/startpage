@@ -1,138 +1,174 @@
+const WMO_CODES = {
+    0: "clear sky",
+    1: "mainly clear",
+    2: "partly cloudy",
+    3: "overcast",
+    45: "fog",
+    48: "depositing rime fog",
+    51: "light drizzle",
+    53: "moderate drizzle",
+    55: "dense drizzle",
+    56: "light freezing drizzle",
+    57: "dense freezing drizzle",
+    61: "slight rain",
+    63: "moderate rain",
+    65: "heavy rain",
+    66: "light freezing rain",
+    67: "heavy freezing rain",
+    71: "light snow fall",
+    73: "moderate snow fall",
+    75: "heavy snow fall",
+    77: "snow grains",
+    80: "slight rain shower",
+    81: "moderate rain shower",
+    82: "violent rain shower",
+    85: "slight snow shower",
+    86: "heavy snow shower",
+    95: "slight or moderate thunderstorm",
+    96: "thunderstorm with slight hail",
+    99: "thunderstorm with heavy hail",
+};
+
+const WMO_ICONS = {
+    0: { 0: "", 1: "" },
+    1: { 0: "", 1: "" },
+    2: { 0: "", 1: "" },
+    3: { 0: "", 1: "" },
+    45: { 0: "", 1: "" },
+    48: { 0: "", 1: "" },
+    51: { 0: "", 1: "" },
+    53: { 0: "", 1: "" },
+    55: { 0: "", 1: "" },
+    56: { 0: "", 1: "" },
+    57: { 0: "", 1: "" },
+    61: { 0: "", 1: "" },
+    63: { 0: "", 1: "" },
+    65: { 0: "", 1: "" },
+    66: { 0: "", 1: "" },
+    67: { 0: "", 1: "" },
+    71: { 0: "", 1: "" },
+    73: { 0: "", 1: "" },
+    75: { 0: "", 1: "" },
+    77: { 0: "", 1: "" },
+    81: { 0: "", 1: "" },
+    81: { 0: "", 1: "" },
+    82: { 0: "", 1: "" },
+    85: { 0: "", 1: "" },
+    86: { 0: "", 1: "" },
+    95: { 0: "", 1: "" },
+    96: { 0: "", 1: "" },
+    99: { 0: "", 1: "" },
+};
+
+function convert24to12(time) {
+    var hours = time.split(":")[0];
+    var minutes = time.split(":")[1];
+    var part = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12;
+
+    hours = hours ? hours : 12;
+
+    return hours + ":" + minutes + " " + part;
+}
+
+async function fetchWeather(lat, lon, element) {
+    try {
+        const timezone = Intl.DateTimeFormat()
+            .resolvedOptions()
+            .timeZone.replace("/", "%2F");
+        const current =
+            "temperature_2m," +
+            "relative_humidity_2m," +
+            "apparent_temperature," +
+            "is_day," +
+            "rain," +
+            "showers," +
+            "snowfall," +
+            "weather_code," +
+            "cloud_cover," +
+            "wind_speed_10m," +
+            "wind_direction_10m,";
+        const daily =
+            "weather_code," +
+            "temperature_2m_max," +
+            "temperature_2m_min," +
+            "apparent_temperature_max," +
+            "apparent_temperature_min," +
+            "sunrise," +
+            "sunset,";
+
+        const r = await fetch(
+            "https://api.open-meteo.com/v1/forecast?" +
+                "latitude=" +
+                lat +
+                "&longitude=" +
+                lon +
+                "&current=" +
+                current +
+                "&daily=" +
+                daily +
+                "&timezone=" +
+                timezone,
+        );
+
+        const d = await r.json();
+
+        weatherDiscription = WMO_CODES[d.current.weather_code];
+        weatherIcon = WMO_ICONS[d.current.weather_code][d.current.is_day];
+        weatherText = `${weatherIcon} ${weatherDiscription}`;
+
+        if (d.current.rain > 0) {
+            downfall = d.current.rain + d.current_units.rain;
+            downfallText = `${downfall} of rain`;
+        } else if (d.current.showers > 0) {
+            downfall = d.current.showers + d.current_units.showers;
+            downfallText = `${downfall} of showers`;
+        } else if (d.current.snow > 0) {
+            downfall = d.current.snow + d.current_units.snow;
+            downfallText = `${downfall} of snow`;
+        } else {
+            downfall = "N/A";
+            downfallText = `no downfall`;
+        }
+
+        humidity =
+            d.current.relative_humidity_2m +
+            d.current_units.relative_humidity_2m;
+        humidityText = `a humidity of ${humidity}`;
+        // wind
+        wind = d.current.wind_speed_10m + d.current_units.wind_speed_10m;
+        windText = `with a wind of ${wind}`;
+        // temperature
+        temperature = d.current.temperature_2m;
+        apparent_temperature = d.current.apparent_temperature;
+        temprature_unit = d.current_units.apparent_temperature;
+        temperatureText = `(${temperature}/${apparent_temperature})${temprature_unit}`;
+        // sunset/rise
+        sunset = convert24to12(d.daily.sunset[0].split("T")[1]);
+        sunrise = convert24to12(d.daily.sunrise[0].split("T")[1]);
+        sunText = `the sun is rising at ${sunrise} and setting at ${sunset}`;
+        // push weatherInfo to element
+        const weatherInfo = new Array(
+            weatherText,
+            temperatureText,
+            windText,
+            humidityText,
+            downfallText,
+            sunText,
+        );
+        element.innerHTML = `${weatherInfo.join("<br>")}`;
+    } catch (e) {
+        element.textContent = "look out the window dawg :)";
+        console.log(e);
+    }
+}
+
 // only needed https://open-meteo.com/en/docs#
 // TODO: cloud coverage ?
 document.addEventListener("DOMContentLoaded", () => {
-	const weatherElement = document.querySelector("#weather")
-
-	let testLocation = ''
-	const testArray = testLocation.split("&")
-	if (testLocation !== '') {
-		var lat = testArray[0].split('=')[1]
-		var long = testArray[1].split('=')[1]
-	} else {
-		var lat = 52.3772
-		var long = 13.797
-	}
-	const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone.replace('/', '%2F')
-	const current = 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m'
-	const daily = 'sunrise,sunset'
-	const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=${current}&daily=${daily}&timezone=${timezone}`
-
-	updateWeather(url, weatherElement);
-	// call limit per day so 8460ms is the lowset call freq
-	setInterval(() => updateWeather(url, weatherElement), 60000);
+    const weatherElement = document.querySelector("#weather");
+    fetchWeather(52.3772, 13.797, weatherElement);
+    // call limit per day so 8460ms is the lowset call freq
+    setInterval(() => fetchWeather(52.3772, 13.797, weatherElement), 60000);
 });
-
-const updateWeather = (url, weatherElement) => {
-	function convert24to12(time) {
-		var hours = time.split(':')[0]
-		var minutes = time.split(':')[1]
-		var part = hours >= 12 ? 'PM' : 'AM'
-
-		hours = hours % 12
-
-		hours = hours ? hours : 12
-
-		return hours + ':' + minutes + ' ' + part
-	}
-
-	fetch(url)
-		.then(response => response.json())
-		.then(data => {
-			// weather
-			switch (data.current.weather_code) {
-				case 0:
-					weatherDiscription = 'Clear'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 1: case 2: case 3:
-					weatherDiscription = 'Mainly clear'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 45: case 48:
-					weatherDiscription = 'Fog'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 51: case 53: case 55:
-					weatherDiscription = 'Drizzle'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 56: case 57:
-					weatherDiscription = 'Freezing Drizzle'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 61: case 63: case 65:
-					weatherDiscription = 'Rain'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 66: case 67:
-					weatherDiscription = 'Freezing Rain'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 71: case 73: case 75:
-					weatherDiscription = 'Snow fall'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 77:
-					weatherDiscription = 'Snow grains'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 80: case 81: case 82:
-					weatherDiscription = 'Rain showers'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 85: case 86:
-					weatherDiscription = 'Snow showers'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				case 95: case 96: case 99:
-					weatherDiscription = 'Thunderstorm'
-					if (data.current.is_day === 1) { weatherIcon = '' } else { weatherIcon = '' }
-					break;
-				default:
-					weatherText = 'N/A'
-			}
-			weatherText = `${weatherIcon} ${weatherDiscription}`
-			// downfall
-			if (data.current.rain > 0) {
-				downfall = data.current.rain + data.current_units.rain
-				downfallText = `${downfall} of rain`
-			}
-			else if (data.current.showers > 0) {
-				downfall = data.current.showers + data.current_units.showers
-				downfallText = `${downfall} of showers`
-			}
-			else if (data.current.snow > 0) {
-				downfall = data.current.snow + data.current_units.snow
-				downfallText = `${downfall} of snow`
-			}
-			else {
-				downfall = 'N/A'
-				downfallText = `no downfall`
-			}
-			// humidity
-			humidity = data.current.relative_humidity_2m + data.current_units.relative_humidity_2m
-			humidityText = `a humidity of ${humidity}`
-			// wind
-			wind = data.current.wind_speed_10m + data.current_units.wind_speed_10m
-			//wind_direction = data.current.wind_direction_10m + data.current_units.wind_direction_10m
-			windText = `with a wind of ${wind}`
-			// temperature
-			temperature = data.current.temperature_2m //+ data.current_units.temperature_2m
-			apparent_temperature = data.current.apparent_temperature //+ data.current_units.apparent_temperature
-			temprature_unit = data.current_units.apparent_temperature
-			temperatureText = `(${temperature}/${apparent_temperature})${temprature_unit}`
-			// sunset/rise
-			sunset = convert24to12(data.daily.sunset[0].split('T')[1])
-			sunrise = convert24to12(data.daily.sunrise[0].split('T')[1])
-			sunText = `the sun is rising at ${sunrise} and setting at ${sunset}`
-			// push weatherInfo to element
-			//const weatherInfo = new Array(`<p>${weatherText} ${temperatureText}</p>`, `<p>${windText}</p>`, `<p>${humidityText}</p>`, `<p>${downfallText}</p>`, `<p>${sunText}</p>`)
-			const weatherInfo = new Array(weatherText ,temperatureText, windText, humidityText, downfallText, sunText)
-			weatherElement.innerHTML = `${weatherInfo.join("<br>")}`;
-			//console.log(data)
-		})
-		.catch(error => {
-			weatherElement.textContent = "look out the window dawg :)"
-			console.log(error)
-		});
-}

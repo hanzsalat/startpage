@@ -1,18 +1,23 @@
-document.addEventListener('DOMContentLoaded', () => {
-	const poem = document.getElementById('poem');
-	const author = document.getElementById('author');
+async function fetchPoem(elementPoem, elementAuthor) {
+    const len = Math.floor(Math.random() * 5) + 1;
+    try {
+        const r = await fetch("https://poetrydb.org/linecount/" + len);
 
-	const lineCount = Math.floor(Math.random() * 5) + 1;
-	const apiEndpoint = `https://poetrydb.org/linecount/${lineCount}`;
+        const d = await r.json();
 
-	fetch(apiEndpoint)
-		.then(response => response.json())
-		.then(data => {
-			const randomIndex = Math.floor(Math.random() * data.length);
-			const poemResult = data[randomIndex];
+        const randomIndex = Math.floor(Math.random() * d.length);
+        const poemResult = d[randomIndex];
 
-			poem.innerHTML = `<em>${poemResult.lines.join("<br>")}</em>`;
-			author.innerHTML = `<p> - ${poemResult.author} (${poemResult.title})</p>`;
-		})
-		.catch(error => console.error(error));
+        elementPoem.innerHTML = `<em>${poemResult.lines.join("<br>")}</em>`;
+        elementAuthor.innerHTML = `<p> - ${poemResult.author} (${poemResult.title})</p>`;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchPoem(
+        document.getElementById("poem"),
+        document.getElementById("author"),
+    );
 });
