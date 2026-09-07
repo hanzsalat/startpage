@@ -9,6 +9,13 @@
     --bg: #eeeeee; /* #eeeeee */
     --fade: #d70087;
 }
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #eeeeee; /* 444444 */
+        --bg: #444444; /* #eeeeee */
+        --fade: #d70087;
+    }
+}
 
 * {
     color: var(--text);
